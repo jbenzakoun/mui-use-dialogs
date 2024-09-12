@@ -1,6 +1,6 @@
 {
   "name": "mui-use-dialogs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MUI Dialogs and Hooks!",
   "homepage": "https://github.com/bdavis2-PCTY/mui-use-dialogs",
   "main": "dist/index.js",
