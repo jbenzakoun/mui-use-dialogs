@@ -26,7 +26,6 @@ const PromptDialogProvider = ({
     const [options, setOptions] = useState<PromptDialogOptions>({});
     const [key, setKey] = useState(0);
 
-
     const promptBase = useCallback((parentId: string, message: string | undefined | null, options: PromptDialogOptions = {}) => {
         return new Promise<string | null>((resolve, reject) => {
             setKey(key => ++key);

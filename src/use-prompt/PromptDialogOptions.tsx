@@ -12,6 +12,7 @@ export type PromptDialogOptions = {
     cancelButtonIcon?: ReactNode | null;
     saveButtonText?: string;
     saveButtonIcon?: ReactNode | null;
+    saveOnEnter?: boolean;
     rejectOnCancel?: boolean;
     allowClose?: boolean;
     multiline?: boolean;
@@ -35,6 +36,7 @@ export const DEFAULT_OPTIONS: PromptDialogOptions = {
     showCancel: true,
     cancelButtonText: "Cancel",
     saveButtonText: "OK",
+    saveOnEnter: true,
     rejectOnCancel: true,
     allowClose: false,
     multiline: false,

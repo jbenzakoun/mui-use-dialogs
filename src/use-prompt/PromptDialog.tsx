@@ -80,6 +80,12 @@ const PromptDialog = ({
                             textFieldRef.current = x;
                             setTextFieldVisible(true);
                         }}
+                        onKeyDown={e => {
+                            if(options.saveOnEnter && e.key === "enter" && e.shiftKey === false)
+                            {
+                                handleSave();
+                            }
+                        }}
                         {...options.slotProps?.textField}
                     />
                 </Stack>
