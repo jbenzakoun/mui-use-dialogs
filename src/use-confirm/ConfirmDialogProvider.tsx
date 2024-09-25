@@ -1,37 +1,37 @@
 import { useCallback, useState } from "react";
 import buildOptions from "../common/buildOptions";
-import PromptDialog from "./PromptDialog";
-import PromptDialogContext from "./PromptDialogContext";
-import { PromptDialogOptions } from "./PromptDialogOptions";
+import ConfirmDialog from "./ConfirmDialog";
+import ConfirmDialogContext from "./ConfirmDialogContext";
+import { ConfirmDialogOptions } from "./ConfirmDialogOptions";
 
-type PromptDialogProviderProps = {
+type ConfirmDialogProviderProps = {
     children: React.ReactNode;
-    defaultOptions?: PromptDialogOptions;
+    defaultOptions?: ConfirmDialogOptions;
 };
 
 type StateType = {
     parentId: string;
     rejectOnCancel: boolean;
-    resolve: (text: string | null) => void;
+    resolve: (confirmed: boolean) => void;
     reject: () => void;
 };
 
-const PromptDialogProvider = ({
+const ConfirmDialogProvider = ({
     children,
     defaultOptions = {},
-}: PromptDialogProviderProps) => {
+}: ConfirmDialogProviderProps) => {
     const [state, setState] = useState<StateType | null>(null);
     const [message, setMessage] = useState<string | undefined | null>(null);
-    const [options, setOptions] = useState<PromptDialogOptions>({});
+    const [options, setOptions] = useState<ConfirmDialogOptions>({});
     const [key, setKey] = useState(0);
 
-    const promptBase = useCallback(
+    const confirmBase = useCallback(
         (
             parentId: string,
             message: string | undefined | null,
-            options: PromptDialogOptions = {},
+            options: ConfirmDialogOptions = {},
         ) => {
-            return new Promise<string | null>((resolve, reject) => {
+            return new Promise<boolean>((resolve, reject) => {
                 setKey((key) => ++key);
                 setMessage(message);
                 setOptions(options);
@@ -59,16 +59,16 @@ const PromptDialogProvider = ({
             if (state?.rejectOnCancel && state?.reject) {
                 state.reject();
             } else if (!state?.rejectOnCancel && state?.resolve) {
-                state.resolve(null);
+                state.resolve(false);
             }
 
             return null;
         });
     }, []);
 
-    const handleSave = useCallback((message: string) => {
+    const handleSave = useCallback(() => {
         setState((state) => {
-            if (state?.resolve) state.resolve(message);
+            if (state?.resolve) state.resolve(true);
 
             return null;
         });
@@ -76,23 +76,23 @@ const PromptDialogProvider = ({
 
     return (
         <>
-            <PromptDialogContext.Provider
-                value={{ promptBase, closeOnParentUnmount }}
+            <ConfirmDialogContext.Provider
+                value={{ confirmBase, closeOnParentUnmount }}
             >
                 {children}
-            </PromptDialogContext.Provider>
+            </ConfirmDialogContext.Provider>
 
-            <PromptDialog
+            <ConfirmDialog
                 key={key}
                 open={state !== null}
                 message={message}
                 options={buildOptions(defaultOptions, options)}
                 onClose={handleClose}
                 onCancel={handleCancel}
-                onSave={handleSave}
+                onConfirm={handleSave}
             />
         </>
     );
 };
 
-export default PromptDialogProvider;
+export default ConfirmDialogProvider;

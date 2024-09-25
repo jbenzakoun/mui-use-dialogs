@@ -13,6 +13,7 @@ export default {
     "@mui/icons-material", 
     "@mui/icons-material/Close", 
     "@mui/icons-material/Save", 
+    "@mui/icons-material/Check", 
     "react/jsx-runtime"
   ],
   plugins: [

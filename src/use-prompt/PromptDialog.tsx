@@ -1,15 +1,25 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, TextField } from '@mui/material';
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { DEFAULT_OPTIONS, PromptDialogOptions } from './PromptDialogOptions';
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Stack,
+    TextField,
+} from "@mui/material";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import CommonDialogProps from "../common/CommonDialogProps";
+import {
+    PROMPT_DEFAULT_OPTIONS,
+    PromptDialogOptions,
+} from "./PromptDialogOptions";
 
-export type PromptDialogProps = {
-    open: boolean;
+export type PromptDialogProps = CommonDialogProps<PromptDialogOptions> & {
     message?: string | null;
     onCancel: () => void;
     onSave: (text: string) => void;
-    onClose: () => void;
-    options?: PromptDialogOptions;
-}
+};
 
 const PromptDialog = ({
     open,
@@ -17,12 +27,11 @@ const PromptDialog = ({
     onCancel,
     onSave,
     onClose,
-    options = DEFAULT_OPTIONS,
+    options = PROMPT_DEFAULT_OPTIONS,
 }: PromptDialogProps) => {
-
     const textFieldRef = useRef<HTMLInputElement>();
     const [isTextFieldVisible, setTextFieldVisible] = useState(false);
-    const [value, setValue] = useState<string>(options.defaultText || '');
+    const [value, setValue] = useState<string>(options.defaultText || "");
 
     const handleClose = useCallback(() => {
         if (options && !options.allowClose) {
@@ -30,7 +39,7 @@ const PromptDialog = ({
         }
 
         return true;
-    }, [options])
+    }, [options]);
 
     const handleCancel = useCallback(() => {
         onCancel();
@@ -42,12 +51,16 @@ const PromptDialog = ({
         onClose();
     }, [onClose, onSave, value]);
 
-
     useEffect(() => {
         // autofocus the text field
         // This needs to happen AFTER the default text is loaded and the textFieldRef is set,
         // thus the 'isTextFieldVisible' state
-        if (options.autoFocus && open && textFieldRef.current && isTextFieldVisible) {
+        if (
+            options.autoFocus &&
+            open &&
+            textFieldRef.current &&
+            isTextFieldVisible
+        ) {
             textFieldRef.current.focus();
             textFieldRef.current.click();
             textFieldRef.current.setSelectionRange(9999, 9999);
@@ -60,29 +73,39 @@ const PromptDialog = ({
             fullWidth
             open={open}
             onClose={handleClose}
-            {...options.slotProps?.dialog}>
+            {...options.slotProps?.dialog}
+        >
             <DialogTitle {...options.slotProps?.dialogTitle}>
                 {options.title}
             </DialogTitle>
             <DialogContent {...options.slotProps?.dialogContent}>
                 <Stack direction="column">
-                    <DialogContentText {...options.slotProps?.message}>{message}</DialogContentText>
+                    <DialogContentText {...options.slotProps?.message}>
+                        {message}
+                    </DialogContentText>
                     <TextField
                         fullWidth
                         value={value}
-                        onChange={x => setValue(x.currentTarget.value)}
+                        onChange={(x) => setValue(x.currentTarget.value)}
                         label={options.label}
                         multiline={options.multiline}
-                        minRows={options.multiline ? options.minRows : undefined}
-                        maxRows={options.multiline ? options.maxRows : undefined}
+                        minRows={
+                            options.multiline ? options.minRows : undefined
+                        }
+                        maxRows={
+                            options.multiline ? options.maxRows : undefined
+                        }
                         autoFocus={options.autoFocus}
-                        inputRef={x => {
+                        inputRef={(x) => {
                             textFieldRef.current = x;
                             setTextFieldVisible(true);
                         }}
-                        onKeyDown={e => {
-                            if(options.saveOnEnter && e.key === "enter" && e.shiftKey === false)
-                            {
+                        onKeyDown={(e) => {
+                            if (
+                                options.saveOnEnter &&
+                                e.key === "enter" &&
+                                e.shiftKey === false
+                            ) {
                                 handleSave();
                             }
                         }}
@@ -91,29 +114,31 @@ const PromptDialog = ({
                 </Stack>
             </DialogContent>
             <DialogActions {...options.slotProps?.dialogActions}>
-                {options.showCancel && (
+                {options.closeButtonShow && (
                     <Button
                         key="cancel"
-                        variant='text'
-                        color='secondary'
+                        variant="text"
+                        color="secondary"
                         onClick={handleCancel}
-                        startIcon={options.cancelButtonIcon || undefined}
-                        {...options.slotProps?.cancelButton}>
-                        {options.cancelButtonText}
+                        startIcon={options.closeButtonIcon || undefined}
+                        {...options.slotProps?.closeButton}
+                    >
+                        {options.closeButtonText}
                     </Button>
                 )}
 
                 <Button
                     key="save"
-                    color='primary'
+                    color="primary"
                     onClick={handleSave}
                     startIcon={options.saveButtonIcon || undefined}
-                    {...options.slotProps?.saveButton}>
+                    {...options.slotProps?.saveButton}
+                >
                     {options.saveButtonText}
                 </Button>
             </DialogActions>
         </Dialog>
-    )
-}
+    );
+};
 
 export default memo(PromptDialog);
