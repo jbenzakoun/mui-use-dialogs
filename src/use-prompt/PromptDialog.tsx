@@ -103,7 +103,7 @@ const PromptDialog = ({
                         onKeyDown={(e) => {
                             if (
                                 options.saveOnEnter &&
-                                e.key === "enter" &&
+                                e.key === "Enter" &&
                                 e.shiftKey === false
                             ) {
                                 handleSave();
